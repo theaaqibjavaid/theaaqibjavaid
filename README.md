@@ -2,7 +2,7 @@
 
 # 👋 Hi, I'm Aaqib Javaid
 
-**Software Developer | AI & LLM Integrations | Modern Cross-Platform Products**
+**Software Developer | AI & LLM Integrations | Modern Cross-Platform Products and Tools**
 
 [![Profile Views](https://komarev.com/ghpvc/?username=theaaqibjavaid&style=flat&color=292D32&labelColor=22252A&logo=github&logoColor=ffffff)](https://github.com/theaaqibjavaid)
 
