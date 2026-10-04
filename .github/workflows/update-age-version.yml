@@ -1,4 +1,4 @@
-name: Update Human Version
+name: Update Version
 
 on:
   schedule:
@@ -22,35 +22,41 @@ jobs:
         run: |
           from datetime import datetime, date
           from zoneinfo import ZoneInfo
+          import calendar
 
-          dob = date(2000, 11, 10)
+          DOB = date(2000, 11, 10)
           today = datetime.now(ZoneInfo("Asia/Kolkata")).date()
 
-          years = today.year - dob.year
-          anniversary = date(today.year, dob.month, dob.day)
+          def add_months(d, months):
+              total = d.year * 12 + (d.month - 1) + months
+              year = total // 12
+              month = total % 12 + 1
+              day = min(d.day, calendar.monthrange(year, month)[1])
+              return date(year, month, day)
 
-          if today < anniversary:
+          # Full years completed on the birthday.
+          years = today.year - DOB.year
+          birthday = date(today.year, DOB.month, DOB.day)
+          if today < birthday:
               years -= 1
 
-          last_birthday = date(today.year if today >= anniversary else today.year - 1, dob.month, dob.day)
+          # Start from the most recent birthday.
+          birthday = date(DOB.year + years, DOB.month, DOB.day)
 
-          months = (today.year - last_birthday.year) * 12 + (today.month - last_birthday.month)
-          if today.day < dob.day:
+          # Full monthly anniversaries completed since that birthday.
+          months = (today.year - birthday.year) * 12 + (today.month - birthday.month)
+          month_anchor = add_months(birthday, months)
+
+          if today < month_anchor:
               months -= 1
+              month_anchor = add_months(birthday, months)
 
-          # Anniversary day is patch 1, not patch 0.
-          # Calculate the day number within the current age-month.
-          if today.day >= dob.day:
-              days = today.day - dob.day + 1
-          else:
-              import calendar
-              previous_month = today.month - 1 or 12
-              previous_year = today.year if today.month > 1 else today.year - 1
-              days_in_previous_month = calendar.monthrange(previous_year, previous_month)[1]
-              days = days_in_previous_month - dob.day + today.day + 1
+          # Patch is 1-indexed: the anniversary date itself is .1.
+          days = (today - month_anchor).days + 1
 
           version = f"{years}.{months}.{days}"
           print(f"Age version: {version}")
+
           with open("/tmp/age-version", "w") as f:
               f.write(version)
 
