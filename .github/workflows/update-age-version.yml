@@ -20,11 +20,11 @@ jobs:
         id: age
         shell: python
         run: |
-          from datetime import date
+          from datetime import datetime, date
           from zoneinfo import ZoneInfo
 
           dob = date(2000, 11, 10)
-          today = date.today()
+          today = datetime.now(ZoneInfo("Asia/Kolkata")).date()
 
           years = today.year - dob.year
           anniversary = date(today.year, dob.month, dob.day)
