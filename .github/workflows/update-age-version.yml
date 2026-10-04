@@ -1,0 +1,93 @@
+name: Update Human Version
+
+on:
+  schedule:
+    - cron: "30 18 * * *" # 00:00 IST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-age-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Calculate age version
+        id: age
+        shell: python
+        run: |
+          from datetime import date
+          from zoneinfo import ZoneInfo
+
+          dob = date(2000, 11, 10)
+          today = date.today()
+
+          years = today.year - dob.year
+          anniversary = date(today.year, dob.month, dob.day)
+
+          if today < anniversary:
+              years -= 1
+
+          last_birthday = date(today.year if today >= anniversary else today.year - 1, dob.month, dob.day)
+
+          months = (today.year - last_birthday.year) * 12 + (today.month - last_birthday.month)
+          if today.day < dob.day:
+              months -= 1
+
+          # Anniversary day is patch 1, not patch 0.
+          # Calculate the day number within the current age-month.
+          if today.day >= dob.day:
+              days = today.day - dob.day + 1
+          else:
+              import calendar
+              previous_month = today.month - 1 or 12
+              previous_year = today.year if today.month > 1 else today.year - 1
+              days_in_previous_month = calendar.monthrange(previous_year, previous_month)[1]
+              days = days_in_previous_month - dob.day + today.day + 1
+
+          version = f"{years}.{months}.{days}"
+          print(f"Age version: {version}")
+          with open("/tmp/age-version", "w") as f:
+              f.write(version)
+
+      - name: Update README
+        shell: bash
+        run: |
+          VERSION="$(cat /tmp/age-version)"
+          python - "$VERSION" <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          version = sys.argv[1]
+          path = Path("README.md")
+          text = path.read_text()
+
+          pattern = r"(<!-- AGE-VERSION:START -->\n)\*\*v[^*]+\*\*(\n<!-- AGE-VERSION:END -->)"
+          replacement = rf"\g<1>**v{version}**\2"
+
+          updated, count = re.subn(pattern, replacement, text, count=1)
+
+          if count != 1:
+              raise SystemExit("AGE-VERSION markers not found exactly once")
+
+          path.write_text(updated)
+          PY
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet -- README.md; then
+            echo "Age version is already current."
+            exit 0
+          fi
+
+          git add README.md
+          git commit -m "chore: update human age version"
+          git push
