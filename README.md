@@ -24,6 +24,9 @@
 
 >🎂
 
+## Upcoming planned feature
+
+> Loading - - -
 ### 🚀 What I Do
 - 🤖 **AI & Machine Learning:** Developing AI-powered applications, prompt engineering workflows, and integrating LLMs/AI Agents.
 - 🏗️ **Scalable Backends:** Architecting robust services, microclimate data models, and API endpoints using Python, FastAPI, and PostgreSQL.
