@@ -95,5 +95,5 @@ jobs:
           fi
 
           git add README.md
-          git commit -m "chore: update human age version"
+          git commit -m "chore: update version"
           git push
