@@ -16,7 +16,7 @@
 
 <br/>
 
-### 🧬 Version
+### Version
 
 <!-- AGE-VERSION:START -->
 **v25.10.27**
