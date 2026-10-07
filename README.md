@@ -33,6 +33,7 @@
 - 📱 **Cross-Platform:** Engineering seamless mobile and web applications with Flutter and React ecosystems.
 - 🔐 **Secure Systems:** Implementing secure architectures, X3DH key exchanges, and end-to-end encryption protocols.
 - 🐳 **DevOps & Infrastructure:** Managing cloud-ready infrastructure, CI/CD pipelines via GitHub Actions, and distributed systems.
+- ☁️ working on climate intelligence platform.
 
 <br/>
 
