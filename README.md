@@ -19,7 +19,7 @@
 ### Version
 
 <!-- AGE-VERSION:START -->
-**v26.0.2**
+**v26.0.3**
 <!-- AGE-VERSION:END -->
 
 >🎂
